@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GO Claim Codes</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ffde59, #ff914d, #5ce1e6);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .container {
+      background: white;
+      max-width: 560px;
+      width: 100%;
+      padding: 32px;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      border: 5px solid #2d6cdf;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #ffcb05;
+      color: #2a2a2a;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-weight: bold;
+      margin-bottom: 12px;
+      border: 2px solid #2d6cdf;
+    }
+
+    h1 {
+      color: #2d6cdf;
+      margin-bottom: 10px;
+      font-size: 34px;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: #444;
+      line-height: 1.5;
+    }
+
+    .reward-box {
+      background: #f7fbff;
+      border: 2px dashed #2d6cdf;
+      border-radius: 16px;
+      padding: 18px;
+      margin: 22px 0;
+    }
+
+    .items {
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .expires {
+      font-size: 14px;
+      color: #666;
+      margin-top: 14px;
+    }
+
+    button {
+      background: #ef5350;
+      color: white;
+      border: none;
+      padding: 14px 30px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 999px;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 5px 0 #b71c1c;
+    }
+
+    button:hover {
+      background: #d94340;
+    }
+
+    button:disabled {
+      background: #aaa;
+      box-shadow: 0 5px 0 #777;
+      cursor: not-allowed;
+    }
+
+    #result {
+      margin-top: 28px;
+      font-size: 18px;
+    }
+
+    .code {
+      background: #fffbcc;
+      border: 2px solid #ffcb05;
+      padding: 14px;
+      border-radius: 12px;
+      margin-top: 12px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      color: #222;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #555;
+      margin-top: 20px;
+    }
+
+    .pokeball {
+      font-size: 42px;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="pokeball">Pokemon Go - Harlem Raiders</div>
+
+    <div class="badge">May Code Distribution</div>
+
+    <h1>GO Claim Codes</h1>
+
+    <p class="subtitle">
+      Claim up to 2 passcodes while supplies last.
+    </p>
+
+    <div class="reward-box">
+      <strong>Each passcode contains:</strong>
+
+      <div class="items">
+        1 Premium Battle Pass<br>
+        1 Star Piece<br>
+        1 Egg Incubator<br>
+        1 Incense
+      </div>
+
+      <div class="expires">
+        Codes expire August 31st, 2026 at 12:00 AM UTC.
+      </div>
+    </div>
+
+    <button id="claimBtn">Claim My Codes</button>
+
+    <div id="result"></div>
+
+    <p class="note">
+      Codes are limited and available on a first-come, first-served basis.
+    </p>
+  </div>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js";
+
+    const supabaseUrl = "YOUR_SUPABASE_URL";
+    const supabaseAnonKey = "YOUR_SUPABASE_ANON_KEY";
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+    document.getElementById("claimBtn").addEventListener("click", async () => {
+      const button = document.getElementById("claimBtn");
+      const result = document.getElementById("result");
+
+      button.disabled = true;
+      button.innerText = "Claiming...";
+
+      const userKey =
+        localStorage.getItem("userKey") || crypto.randomUUID();
+
+      localStorage.setItem("userKey", userKey);
+
+      const { data, error } = await supabase.rpc("claim_codes", {
+        user_key: userKey
+      });
+
+      if (error) {
+        console.error(error);
+        result.innerHTML = "<p>Something went wrong. Please try again.</p>";
+        button.disabled = false;
+        button.innerText = "Claim My Codes";
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        result.innerHTML = "<p><strong>Sorry, all codes have been claimed.</strong></p>";
+        button.innerText = "All Claimed";
+        return;
+      }
+
+      result.innerHTML =
+        "<h3>Your Codes:</h3>" +
+        data.map(item =>
+          `<div class="code">${item.code}</div>`
+        ).join("");
+
+      button.innerText = "Codes Claimed";
+    });
+  </script>
+</body>
+</html>
