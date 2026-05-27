@@ -126,7 +126,7 @@
   <div class="container">
     <div class="pokeball">Pokemon Go - Harlem Raiders</div>
 
-    <div class="badge">May Code Distribution</div>
+    <div class="badge" id="monthBadge"></div>
 
     <h1>GO Claim Codes</h1>
 
@@ -165,6 +165,27 @@
     const supabaseAnonKey = "YOUR_SUPABASE_ANON_KEY";
 
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+    const currentMonth = new Date().toLocaleString('en-US', {
+    month: 'long'
+    });
+
+    document.getElementById("monthBadge").innerText =
+  `${currentMonth} Code Distribution`;
+
+    const { data: availableCodes } = await supabase
+  .from('codes')
+  .select('id')
+  .eq('month_label', currentMonth)
+  .limit(1);
+
+  if (!availableCodes || availableCodes.length === 0) {
+  document.getElementById("result").innerHTML =
+    `<p><strong>${currentMonth} codes are coming soon.</strong></p>`;
+
+  document.getElementById("claimBtn").disabled = true;
+  document.getElementById("claimBtn").innerText = "Coming Soon";
+}
 
     document.getElementById("claimBtn").addEventListener("click", async () => {
       const button = document.getElementById("claimBtn");
