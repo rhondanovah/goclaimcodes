@@ -178,8 +178,13 @@
 
       localStorage.setItem("userKey", userKey);
 
+      const currentMonth = new Date().toLocaleString('en-US', {
+      month: 'long'
+      });
+
       const { data, error } = await supabase.rpc("claim_codes", {
-        user_key: userKey
+      user_key: userKey,
+      claim_month: currentMonth
       });
 
       if (error) {
