@@ -6,17 +6,27 @@
   <title>GO Claim Codes</title>
 
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #ffde59, #ff914d, #5ce1e6);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 24px;
-    }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background:
+    linear-gradient(
+      135deg,
+      #ff0000 0%,
+      #ff0000 33%,
+      #3b4cca 33%,
+      #3b4cca 66%,
+      #ffde00 66%,
+      #ffde00 100%
+    );
+
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 24px;
+}
 
     .container {
       background: white;
@@ -205,11 +215,42 @@
       return;
     }
 
-    result.innerHTML =
-      "<h3>Your Codes:</h3>" +
-      data.map(item =>
-        `<div class="code">${item.code}</div>`
-      ).join("");
+result.innerHTML =
+  "<h3>Your Codes:</h3>" +
+  data.map(item =>
+    `
+    <div class="code">
+      <div style="margin-bottom:10px;">${item.code}</div>
+
+      <button
+        onclick="navigator.clipboard.writeText('${item.code}')"
+        style="
+          margin-right:10px;
+          background:#2d6cdf;
+          box-shadow:none;
+          padding:8px 16px;
+          font-size:14px;
+        ">
+        Copy
+      </button>
+
+      <a
+        href="https://store.pokemongolive.com/offer-redemption"
+        target="_blank"
+        style="
+          text-decoration:none;
+          background:#34a853;
+          color:white;
+          padding:10px 16px;
+          border-radius:999px;
+          font-size:14px;
+          font-weight:bold;
+        ">
+        Redeem
+      </a>
+    </div>
+    `
+  ).join("");
 
     button.innerText = "Codes Claimed";
   });
