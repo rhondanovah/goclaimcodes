@@ -173,20 +173,6 @@
   document.getElementById("monthBadge").innerText =
     `${currentMonth} Code Distribution`;
 
-  const { data: availableCodes } = await supabase
-    .from('codes')
-    .select('id')
-    .eq('month_label', currentMonth)
-    .limit(1);
-
-  if (!availableCodes || availableCodes.length === 0) {
-    document.getElementById("result").innerHTML =
-      `<p><strong>${currentMonth} codes are coming soon.</strong></p>`;
-
-    document.getElementById("claimBtn").disabled = true;
-    document.getElementById("claimBtn").innerText = "Coming Soon";
-  }
-
   document.getElementById("claimBtn").addEventListener("click", async () => {
     const button = document.getElementById("claimBtn");
     const result = document.getElementById("result");
