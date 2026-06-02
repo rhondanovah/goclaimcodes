@@ -168,7 +168,7 @@ body {
     </p>
   </div>
 
-  <script type="module">
+<script type="module">
   import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
   const supabaseUrl = "https://btubyxlkvkpuugeiceyr.supabase.co";
@@ -176,52 +176,54 @@ body {
 
   const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-  const currentMonth = new Date().toLocaleString('en-US', {
-    month: 'long'
+  const button = document.getElementById("claimBtn");
+  const result = document.getElementById("result");
+  const monthBadge = document.getElementById("monthBadge");
+
+  const currentMonth = new Date().toLocaleString("en-US", {
+    month: "long"
   });
 
-  document.getElementById("monthBadge").innerText =
-    `${currentMonth} Code Distribution`;
+  monthBadge.innerText = `${currentMonth} Code Distribution`;
 
-  const button = document.getElementById("claimBtn");
-   const result = document.getElementById("result");
+  async function checkCodeStatus() {
+    const { data: statusData, error: statusError } = await supabase.rpc("get_code_status", {
+      claim_month: currentMonth
+    });
 
-const { data: statusData } = await supabase.rpc("get_code_status", {
-  claim_month: currentMonth
-});
+    if (statusError) {
+      console.error(statusError);
+      result.innerHTML = "<p><strong>Unable to check code status.</strong></p>";
+      button.disabled = true;
+      button.innerText = "Unavailable";
+      return;
+    }
 
-const status = statusData?.[0];
+    const status = statusData?.[0];
 
-if (!status || Number(status.total_codes) === 0) {
-  result.innerHTML =
-    `<p><strong>${currentMonth} codes are coming soon.</strong></p>`;
+    if (!status || Number(status.total_codes) === 0) {
+      result.innerHTML = `<p><strong>${currentMonth} codes are coming soon.</strong></p>`;
+      button.disabled = true;
+      button.innerText = "Coming Soon";
+      return;
+    }
 
-  button.disabled = true;
-  button.innerText = "Coming Soon";
+    if (Number(status.available_codes) === 0) {
+      result.innerHTML = `<p><strong>Sorry, all ${currentMonth} codes have been claimed.</strong></p>`;
+      button.disabled = true;
+      button.innerText = "All Claimed";
+      return;
+    }
 
-  return;
-}
+    button.disabled = false;
+    button.innerText = "Claim My Codes";
+  }
 
-if (status && Number(status.total_codes) > 0 &&
-    Number(status.available_codes) === 0) {
-
-  result.innerHTML =
-    `<p><strong>Sorry, all ${currentMonth} codes have been claimed.</strong></p>`;
-
-  button.disabled = true;
-  button.innerText = "All Claimed";
-
-  return;
-}
-
-  document.getElementById("claimBtn").addEventListener("click", async () => {
- 
+  button.addEventListener("click", async () => {
     button.disabled = true;
     button.innerText = "Claiming...";
 
-    const userKey =
-      localStorage.getItem("userKey") || crypto.randomUUID();
-
+    const userKey = localStorage.getItem("userKey") || crypto.randomUUID();
     localStorage.setItem("userKey", userKey);
 
     const { data, error } = await supabase.rpc("claim_codes", {
@@ -238,51 +240,50 @@ if (status && Number(status.total_codes) > 0 &&
     }
 
     if (!data || data.length === 0) {
-      result.innerHTML =
-        `<p><strong>Sorry, all ${currentMonth} codes have been claimed.</strong></p>`;
+      result.innerHTML = `<p><strong>Sorry, all ${currentMonth} codes have been claimed.</strong></p>`;
       button.innerText = "All Claimed";
       return;
     }
 
-result.innerHTML =
-  "<h3>Your Codes:</h3>" +
-  data.map(item =>
-    `
-    <div class="code">
-      <div style="margin-bottom:10px;">${item.code}</div>
+    result.innerHTML =
+      "<h3>Your Codes:</h3>" +
+      data.map(item =>
+        `
+        <div class="code">
+          <div style="margin-bottom:10px;">${item.code}</div>
 
-      <button
-        onclick="navigator.clipboard.writeText('${item.code}')"
-        style="
-          margin-right:10px;
-          background:#2d6cdf;
-          box-shadow:none;
-          padding:8px 16px;
-          font-size:14px;
-        ">
-        Copy
-      </button>
+          <button
+            onclick="navigator.clipboard.writeText('${item.code}')"
+            style="
+              margin-right:10px;
+              background:#2d6cdf;
+              box-shadow:none;
+              padding:8px 16px;
+              font-size:14px;
+            ">
+            Copy
+          </button>
 
-      <a
-        href="https://store.pokemongolive.com/offer-redemption"
-        target="_blank"
-        style="
-          text-decoration:none;
-          background:#34a853;
-          color:white;
-          padding:10px 16px;
-          border-radius:999px;
-          font-size:14px;
-          font-weight:bold;
-        ">
-        Redeem
-      </a>
-    </div>
-    `
-  ).join("");
+          <a
+            href="https://store.pokemongolive.com/offer-redemption"
+            target="_blank"
+            style="
+              text-decoration:none;
+              background:#34a853;
+              color:white;
+              padding:10px 16px;
+              border-radius:999px;
+              font-size:14px;
+              font-weight:bold;
+            ">
+            Redeem
+          </a>
+        </div>
+        `
+      ).join("");
 
     button.innerText = "Codes Claimed";
   });
+
+  checkCodeStatus();
 </script>
-</body>
-</html>
