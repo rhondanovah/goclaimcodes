@@ -183,10 +183,39 @@ body {
   document.getElementById("monthBadge").innerText =
     `${currentMonth} Code Distribution`;
 
-  document.getElementById("claimBtn").addEventListener("click", async () => {
-    const button = document.getElementById("claimBtn");
-    const result = document.getElementById("result");
+  const button = document.getElementById("claimBtn");
+   const result = document.getElementById("result");
 
+const { data: statusData } = await supabase.rpc("get_code_status", {
+  claim_month: currentMonth
+});
+
+const status = statusData?.[0];
+
+if (!status || Number(status.total_codes) === 0) {
+  result.innerHTML =
+    `<p><strong>${currentMonth} codes are coming soon.</strong></p>`;
+
+  button.disabled = true;
+  button.innerText = "Coming Soon";
+
+  return;
+}
+
+if (status && Number(status.total_codes) > 0 &&
+    Number(status.available_codes) === 0) {
+
+  result.innerHTML =
+    `<p><strong>Sorry, all ${currentMonth} codes have been claimed.</strong></p>`;
+
+  button.disabled = true;
+  button.innerText = "All Claimed";
+
+  return;
+}
+
+  document.getElementById("claimBtn").addEventListener("click", async () => {
+ 
     button.disabled = true;
     button.innerText = "Claiming...";
 
