@@ -136,7 +136,7 @@ body {
   <div class="container">
     <div class="pokeball">Pokemon Go - Harlem Raiders</div>
 
-    <div class="badge" id="monthBadge"></div>
+    <div class="badge">Game Code Distribution</div>
 
     <h1>GO Claim Codes</h1>
 
@@ -178,18 +178,9 @@ body {
 
   const button = document.getElementById("claimBtn");
   const result = document.getElementById("result");
-  const monthBadge = document.getElementById("monthBadge");
-
-  const currentMonth = new Date().toLocaleString("en-US", {
-    month: "long"
-  });
-
-  monthBadge.innerText = `${currentMonth} Code Distribution`;
 
   async function checkCodeStatus() {
-    const { data: statusData, error: statusError } = await supabase.rpc("get_code_status", {
-      claim_month: currentMonth
-    });
+    const { data: statusData, error: statusError } = await supabase.rpc("get_code_status");
 
     if (statusError) {
       console.error(statusError);
@@ -202,14 +193,14 @@ body {
     const status = statusData?.[0];
 
     if (!status || Number(status.total_codes) === 0) {
-      result.innerHTML = `<p><strong>${currentMonth} codes are coming soon.</strong></p>`;
+      result.innerHTML = `<p><strong>New game codes are coming soon.</strong></p>`;
       button.disabled = true;
       button.innerText = "Coming Soon";
       return;
     }
 
     if (Number(status.available_codes) === 0) {
-      result.innerHTML = `<p><strong>Sorry, all ${currentMonth} codes have been claimed.</strong></p>`;
+      result.innerHTML = `<p><strong>Sorry, all available game codes have been claimed.</strong></p>`;
       button.disabled = true;
       button.innerText = "All Claimed";
       return;
@@ -228,7 +219,6 @@ body {
 
     const { data, error } = await supabase.rpc("claim_codes", {
       user_key: userKey,
-      claim_month: currentMonth
     });
 
     if (error) {
