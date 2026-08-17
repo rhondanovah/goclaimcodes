@@ -140,6 +140,31 @@ body {
     object-fit: contain;
     }
 
+    .campfire-link {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .campfire {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .campfire img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+
+    .campfire:hover {
+      opacity: 0.8;
+    }
+    
     .note {
       font-size: 13px;
       color: #555;
@@ -197,6 +222,13 @@ body {
       <br>Trainers may claim up to two codes per week.
     </p>
   </div>
+
+<a href="https://tinyurl.com/pokemonharlem" target="_blank" class="campfire-link">
+  <div class="campfire">
+    <img src="campfire.png" alt="Campfire">
+    <span>Join us on Campfire!</span>
+  </div>
+</a>
 
 <script type="module">
   import { createClient } from "https://esm.sh/@supabase/supabase-js";
