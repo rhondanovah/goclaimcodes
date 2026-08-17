@@ -126,6 +126,20 @@ body {
       color: #222;
     }
 
+    .reward-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 6px 0;
+    }
+
+    .reward-item img {
+      width: 28px;
+      height: 28px;
+    object-fit: contain;
+    }
+
     .note {
       font-size: 13px;
       color: #555;
@@ -133,7 +147,7 @@ body {
     }
 
     .pokeball {
-      font-size: 42px;
+      font-size: 22px;
       margin-bottom: 8px;
     }
   </style>
@@ -147,23 +161,34 @@ body {
     
     <div class="pokeball">Pokemon Go - Harlem Raiders</div>
 
-    <div class="badge">Game Code Distribution</div>
+    <div class="badge">Digital Passcode Distribution</div>
 
     <h1>GO Claim Codes</h1>
-
-    <p class="subtitle">
-      Trainers can claim up to 2 codes per week.
-    </p>
 
     <div class="reward-box">
       <strong>Each passcode contains:</strong>
 
       <div class="items">
-        1 Premium Battle Pass<br>
-        1 Star Piece<br>
-        1 Egg Incubator<br>
-        1 Incense
+      <div class="reward-item">
+      <img src="premiumpass.png" alt="">
+      <span>1 Premium Battle Pass</span>
       </div>
+
+  <div class="reward-item">
+    <img src="starpiece.png" alt="">
+    <span>1 Star Piece</span>
+  </div>
+
+  <div class="reward-item">
+    <img src="incubator.png" alt="">
+    <span>1 Egg Incubator</span>
+  </div>
+
+  <div class="reward-item">
+    <img src="incense.png" alt="">
+    <span>1 Incense</span>
+  </div>
+</div>
 
     <button id="claimBtn">Claim My Codes</button>
 
@@ -171,6 +196,8 @@ body {
 
     <p class="note">
       Codes are limited and available on a first-come, first-served basis.
+    </p>
+      <p>Trainers may claim up to two codes per week.
     </p>
   </div>
 
